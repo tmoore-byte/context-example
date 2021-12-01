@@ -3,6 +3,7 @@ import Link from 'next/link'
 import ItemCard from '../components/ItemCard'
 import { useItems } from '../context/ItemContext'
 import { useUser } from '../context/UserContext'
+import { useState } from 'react'
 
 export default function Home() {
   /* Get access to the User Context 
@@ -15,12 +16,30 @@ export default function Home() {
    * to create a gallery of ItemCard components
   */
 
+
+ 
   const addToCart = (itemName) => {
-    /* TODO: Write function that updates the
+     /* 
+  TODO: Write function that updates the
      * user context object's cart 
      * to include the added item
     */
+   user.cart.push(itemName)
+   setCartNum(user.cart.length)
+   //add the price
+   let nItem = items.filter(i=> i.name ==itemName)[0]
+   let nIndex = items.findIndex(i => i.name == itemName)
+   
+   //change the item stock
+   let theItem = items.filter(i => i.name == itemName)[0]
+   let theIndex = items.findIndex(i => i.name == itemName)
+   nItem.stock -= 1
+   items[nIndex].stock = nItem.stock
+   console.log(items[nIndex])
   }
+
+  const { items, setItems } = useItems()
+  const [ cartNum, setCartNum ] = useState(user.cart.length)
 
   return (
     <div>
@@ -45,6 +64,10 @@ export default function Home() {
           */
           }
           <p>plants will go here</p>
+          <p>
+            {items.map(e => (
+              <ItemCard useItems key={e.name} name={e.name} img={e.img} 
+              stock={e.stock} price={e.price} add={addToCart}/>))}</p>
         </div>
       </main>
     </div>
